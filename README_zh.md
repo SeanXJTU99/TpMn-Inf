@@ -13,13 +13,13 @@ game_server (FastAPI :8000)
     → AsyncOpenAI client
     → vLLM / SGLang OpenAI-compatible endpoint (:8080)
     → Triton kernels (硬件无关 DSL → 目标硬件 ISA)
-        ├── AMD ROCm backend  (gfx1100 wave32)
-        └── Ascend CANN backend (规划中)
+        ├── AMD ROCm backend  (RDNA3 wave32, LDS 64KB/CU)
+        └── Ascend CANN backend (910B, UB 192KB, Cube 16-align)
 ```
 
 **设计原则**：
 - **vLLM/SGLang 框架零修改** — 算子通过框架插件机制注入
-- **Triton 一次编写** — 同组 kernel 跨 AMD/Ascend/模型架构，仅换调参 JSON
+- **Triton 一次编写** — 同组 kernel 跨 AMD/Ascend，平台差异通过 `tl.constexpr` 分支 + 调参 JSON 覆盖
 - **模型无关** — 支持 Qwen、GLM、Llama 等 decoder-only 模型，适配层最小化
 
 ## 项目结构
@@ -27,12 +27,13 @@ game_server (FastAPI :8000)
 ```
 ├── infer/                    # 推理引擎（核心交付）
 │   ├── kernels/               #   框架无关 Triton 算子
-│   │   ├── attention.py       #     P0: PagedAttention
+│   │   ├── attention.py       #     P0: PagedAttention (2D/3D)
 │   │   ├── fused_qkv_rope.py  #     P1: RMSNorm+QKV+RoPE
 │   │   ├── fused_geglu_ffn.py #     P3: GEGLU+FFN
-│   │   └── tests/
+│   │   ├── tune_config.py     #     多平台调参分发
+│   │   └── ascend_tune.json   #     Ascend 910B tile 默认值
 │   ├── vllm_adapter/          #   vLLM CUSTOM backend 插件
-│   ├── sglang_adapter/        #   SGLang adapter（待开发）
+│   ├── sglang_adapter/        #   SGLang amdk backend
 │   ├── bench/                 #   Benchmark 工具
 │   └── scripts/               #   启动脚本
 ├── training/eval/            # 评估体系（Phase 3.5）
@@ -63,14 +64,15 @@ python -c "from training.eval.checks.persona import run_all_persona; ..."
 
 | 模块 | 状态 |
 |------|:---:|
-| P0 PagedAttention (Triton fork) | 代码完成，待 GPU 实测 |
-| P1 Fused QKV+RoPE | 代码完成，待 GPU 实测 |
-| P3 Fused GEGLU+FFN | 代码完成，待 GPU 实测 |
+| P0 PagedAttention (AMD + Ascend) | 代码完成，待 GPU 实测 |
+| P1 Fused QKV+RoPE (AMD + Ascend) | 代码完成，待 GPU 实测 |
+| P3 Fused GEGLU+FFN (AMD + Ascend) | 代码完成，待 GPU 实测 |
 | eval 硬校验 (16 checks) | Windows 本机可跑 |
 | 自动调参 (tune_attention.py) | 代码完成，待 GPU sweep |
-| Phase 1 基线 | 待 WSL2 环境 |
-| SGLang adapter | 规划中（见 refactor_plan） |
-| Ascend 适配 | 待确认 CANN 环境 |
+| vLLM adapter (CUSTOM backend + inject) | 代码完成 |
+| SGLang adapter (amdk backend + inject) | 代码完成 |
+| Ascend 910B 适配 (kernel IS_ASCEND 分支) | 代码完成，待 910B 硬件 |
+| Phase 1 基线 | 待 GPU 硬件 |
 
 ## 硬件
 

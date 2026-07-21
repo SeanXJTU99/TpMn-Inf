@@ -12,12 +12,12 @@ game_server (FastAPI :8000)
     → vLLM / SGLang (:8080)
     → Triton kernels (hardware-agnostic DSL → native GPU ISA)
         ├── AMD ROCm  (RDNA3/CDNA3)
-        └── Ascend CANN (planned)
+        └── Ascend CANN (910B, UB 192KB, Cube 16-align)
 ```
 
 **Principles**:
 - **Zero framework modification** — kernels injected via framework plugin mechanisms
-- **Write once, run anywhere** — same Triton ops across AMD/Ascend/NVIDIA, only swap tuning JSON
+- **Write once, run anywhere** — same Triton ops across AMD/Ascend, platform-specific paths via `tl.constexpr` branches + tuning JSON
 - **Model agnostic** — supports Qwen 2.5/3, GLM, Llama, and other decoder-only architectures (7B–14B)
 
 ## Project Structure
@@ -25,8 +25,13 @@ game_server (FastAPI :8000)
 ```
 ├── infer/                    # Inference engine
 │   ├── kernels/              #   Framework-agnostic Triton ops
+│   │   ├── attention.py       #     P0: PagedAttention (2D/3D)
+│   │   ├── fused_qkv_rope.py  #     P1: RMSNorm+QKV+RoPE
+│   │   ├── fused_geglu_ffn.py #     P3: GEGLU+FFN
+│   │   ├── tune_config.py     #     Multi-platform tuning dispatch
+│   │   └── ascend_tune.json   #     Ascend 910B tile defaults
 │   ├── vllm_adapter/         #   vLLM CUSTOM backend plugin
-│   ├── sglang_adapter/       #   SGLang adapter (stub)
+│   ├── sglang_adapter/       #   SGLang amdk backend
 │   ├── bench/                #   Benchmarks
 │   └── scripts/              #   Launch scripts
 ├── training/eval/            # Evaluation framework
@@ -57,13 +62,15 @@ See `TESTING.md` for step-by-step (8 sections, from ROCm setup to autotuning).
 
 | Module | Status |
 |--------|:---:|
-| P0 PagedAttention (Triton fork) | Done, awaiting GPU test |
-| P1 Fused QKV+RoPE | Done, awaiting GPU test |
-| P3 Fused GEGLU+FFN | Done, awaiting GPU test |
+| P0 PagedAttention (Triton, AMD + Ascend) | Done, awaiting GPU test |
+| P1 Fused QKV+RoPE (AMD + Ascend) | Done, awaiting GPU test |
+| P3 Fused GEGLU+FFN (AMD + Ascend) | Done, awaiting GPU test |
 | Eval hard checks (16 checks) | Runnable on Windows |
 | Autotuning (tune_attention.py) | Done, awaiting GPU sweep |
-| Baseline | Awaiting WSL2 env |
-| SGLang adapter | Stub complete |
+| vLLM adapter (CUSTOM backend + inject) | Done |
+| SGLang adapter (amdk backend + inject) | Done |
+| Ascend 910B adapter (kernel IS_ASCEND paths) | Done, awaiting 910B hardware |
+| Baseline | Awaiting GPU hardware |
 
 ## Hardware & Models
 
