@@ -37,6 +37,7 @@ infer/PHASE1.md
 # Claude Code — session data, not part of project
 .claude/
 memory/
+CLAUDE.md
 
 # vLLM reference clone (sparse, v0.18.0) — not project code
 vllm/
