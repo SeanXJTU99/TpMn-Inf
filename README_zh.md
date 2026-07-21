@@ -1,4 +1,6 @@
-# TpMn-Inf — Non-NVIDIA LLM Inference Optimization
+# TpMn-Inf — 非 NVIDIA 生态 LLM 推理优化
+
+[English](README.md) | 中文
 
 为实时剧情生成游戏构建的非 NVIDIA 生态本地推理方案。用单卡 AMD GPU（或 Ascend NPU）运行开源 LLM + LoRA adapter，替换云端 API，目标零推理成本 + 叙事质量不劣于云端。
 

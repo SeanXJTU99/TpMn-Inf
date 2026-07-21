@@ -1,5 +1,7 @@
 # TpMn-Inf — Non-NVIDIA LLM Inference Optimization
 
+English | [中文](README_zh.md)
+
 Local inference for real-time narrative generation games. Replaces cloud APIs with a single AMD GPU (or Ascend NPU) running open-source LLMs + LoRA adapters — zero inference cost, no quality regression.
 
 ## Architecture
