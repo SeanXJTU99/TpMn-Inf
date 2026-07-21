@@ -261,7 +261,7 @@ class TestRunAllAtomicChecks:
         # 先让 Saber_Artoria 死亡
         snapshot = dict(sample_memory.current_snapshot)
         snapshot["Saber_Artoria"] = CharacterState(
-            hp=0, max_hp=100, status="阵亡", location="冬木市·废墟",
+            hp=0, max_hp=100, status="阵亡", location="城区·废墟",
             command_spells=0, is_alive=False, mana_remaining=0,
         )
         memory = GameMemorySystem(
@@ -329,7 +329,7 @@ class TestRunAllAtomicChecks:
         assert len(violations) >= 3
 
     def test_day_limit_exceeded(self, sample_memory):
-        """第8天——超过圣杯战争7天限制。"""
+        """第8天——超过游戏7天限制。"""
         memory = GameMemorySystem(
             active_servant_keys=sample_memory.active_servant_keys,
             chronicle_history=sample_memory.chronicle_history,

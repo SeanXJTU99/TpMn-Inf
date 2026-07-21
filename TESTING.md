@@ -17,7 +17,7 @@
 
 ```cmd
 cd E:\gameAMDenging
-python -c "from training.eval.checks.persona import run_all_persona; r=run_all_persona('冬木市的夜晚，你走在桥上。我认为这很危险。根据GM报告，你应该撤退。',{}); [print(f'{x.name}: {\"PASS\" if x.passed else \"FAIL\"} — {x.detail}') for x in r]"
+python -c "from training.eval.checks.persona import run_all_persona; r=run_all_persona('夜色下，你走在跨江大桥上。我认为这很危险。根据GM报告，你应该撤退。',{}); [print(f'{x.name}: {\"PASS\" if x.passed else \"FAIL\"} — {x.detail}') for x in r]"
 ```
 
 预期输出：
@@ -40,8 +40,8 @@ from training.eval.checks.leak    import run_all_leak
 from training.eval.checks.slop    import run_all_slop
 
 # 模拟一段 Narrator 输出（含故意违规）
-text = '''冬木市的夜晚，你走在未远川大桥上。我认为这很危险。根据GM报告，
-Berserker 正朝你冲来。你的 Servant 灵体化后撤，嘴角勾起一抹弧度。
+text = '''夜幕下的城区，你走在跨江大桥上。我认为这很危险。根据GM报告，
+狂战士正朝你冲来。你的角色灵体化后撤，嘴角勾起一抹弧度。
 魔力回路的灼痛提醒你今夜已消耗过半。'''
 
 print('=== persona (5 checks) ===')
@@ -125,7 +125,7 @@ bash /mnt/e/gameAMDenging/infer/scripts/launch_baseline.sh
 # 另开终端
 curl -s http://localhost:8080/v1/chat/completions \
   -H "Content-Type: application/json" \
-  -d '{"model":"qwen2.5-7b-baseline","messages":[{"role":"user","content":"用一句话描述冬木市的夜晚"}],"max_tokens":64}'
+  -d '{"model":"qwen2.5-7b-baseline","messages":[{"role":"user","content":"描述一座夜晚的城市"}],"max_tokens":64}'
 # 期望: 有中文 JSON 返回，无 NaN/乱码
 ```
 

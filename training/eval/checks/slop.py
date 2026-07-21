@@ -4,7 +4,7 @@
 检测项:
   1. distinct-2 / distinct-3 — 跨样本 bigram/trigram 多样性
   2. self-BLEU — 同一 prompt 多次采样的互相似度
-  3. 套话词表 — 型月/网文常见 cliché 命中率
+  3. 套话词表 — 游戏/网文常见 cliché 命中率
   4. 句长方差 — 句式趋同时方差坍缩
 
 self-BLEU 需要 inputs: list[str] 多段样本（同一 scene 的不同独立采样）。
@@ -19,7 +19,7 @@ from typing import Any
 from . import CheckResult
 
 
-# ─── 型月 / 中文叙事常见套话词表 ───
+# ─── 中文叙事常见套话词表 ───
 
 _CLICHE_WORDS = [
     "嘴角勾起一抹弧度", "眼中闪过一丝", "嘴角微微上扬", "眼眸深处",

@@ -2,7 +2,7 @@
 《万能愿望机：残响协议》— 终端 CLI 客户端
 =============================================
 纯标准库实现，零额外依赖。
-连接 localhost:8000，循环交互直到圣杯战争结束。
+连接 localhost:8000，循环交互直到游戏结束。
 """
 
 import json
@@ -178,7 +178,7 @@ def run_game():
 
     while True:
         # ── 初始化新游戏 ──
-        print("\n  正在初始化圣杯战争...")
+        print("\n  正在初始化游戏...")
         try:
             data = api_post("/api/game/init", {})
         except RuntimeError as e:
@@ -213,7 +213,7 @@ def run_game():
             try:
                 user_input = input("\n  > 你的指令: ").strip()
             except (EOFError, KeyboardInterrupt):
-                print("\n\n  圣杯战争中断。再见。\n")
+                print("\n\n  游戏中断。再见。\n")
                 return
 
             if not user_input:
@@ -294,7 +294,7 @@ def handle_command(cmd: str, session_id: str) -> str:
     cmd_lower = cmd.lower()
 
     if cmd_lower in ("/quit", "/q", "/exit"):
-        print("\n  圣杯战争中断。愿你下次获得更好的英灵。\n")
+        print("\n  游戏中断。愿你下次获得更好的角色。\n")
         return "quit"
 
     elif cmd_lower in ("/new", "/newgame", "/restart"):
@@ -305,7 +305,7 @@ def handle_command(cmd: str, session_id: str) -> str:
         print(f"""
   {divider('─')}
   可用命令:
-    /new      放弃当前战局，开启新的圣杯战争
+    /new      放弃当前战局，开启新的游戏
     /quit     完全退出游戏
     /help     显示此帮助
     /status   查看当前存活状态
@@ -348,7 +348,7 @@ def _ask_new_game_or_quit() -> str:
             print("\n  再见。\n")
             return "quit"
         if choice in ("n", "new", "1"):
-            print("\n  新的圣杯战争即将开幕...\n")
+            print("\n  新的游戏即将开幕...\n")
             return "new_game"
         elif choice in ("q", "quit", "exit", "2"):
             print("\n  愿圣杯与你的记忆同在。再见。\n")

@@ -105,22 +105,22 @@ def mock_full_pipeline():
                         "current_snapshot": {
                             "Protagonist_Master": {
                                 "hp": 100, "max_hp": 100, "status": "完美健康",
-                                "location": "冬木市·安全屋", "command_spells": 3,
+                                "location": "城区·安全屋", "command_spells": 3,
                                 "is_alive": True, "mana_remaining": 100,
                             },
                             "Saber_Artoria": {
                                 "hp": 100, "max_hp": 100, "status": "侦察完毕",
-                                "location": "冬木市·郊外", "command_spells": 0,
+                                "location": "城区·郊外", "command_spells": 0,
                                 "is_alive": True, "mana_remaining": 100,
                             },
                             "Archer_EMIYA": {
                                 "hp": 100, "max_hp": 100, "status": "待命中",
-                                "location": "冬木市·远坂宅", "command_spells": 0,
+                                "location": "城区·远坂宅", "command_spells": 0,
                                 "is_alive": True, "mana_remaining": 90,
                             },
                             "Enemy_Master": {
                                 "hp": 100, "max_hp": 100, "status": "完美健康",
-                                "location": "冬木市·教会", "command_spells": 3,
+                                "location": "城区·教会", "command_spells": 3,
                                 "is_alive": True, "mana_remaining": 100,
                             },
                         },
@@ -130,7 +130,7 @@ def mock_full_pipeline():
             ),
             # 3. Narrator (deepseek-chat)
             (
-                "Saber_Artoria 宛如一道银色的闪电掠过冬木的夜空——"
+                "Saber_Artoria 宛如一道银色的闪电掠过城区的夜空——"
                 "她的直感没有捕捉到任何异常，郊外的森林静得可怕。"
                 "而这异常的寂静本身，就是最大的异常。",
                 {"total_tokens": 500, "model": "deepseek-chat"},

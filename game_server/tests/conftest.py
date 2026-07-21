@@ -27,7 +27,7 @@ def alive_master() -> CharacterState:
         hp=100,
         max_hp=100,
         status="完美健康",
-        location="冬木市·安全屋",
+        location="城区·安全屋",
         command_spells=3,
         is_alive=True,
         mana_remaining=100,
@@ -41,7 +41,7 @@ def alive_servant() -> CharacterState:
         hp=100,
         max_hp=100,
         status="巅峰状态",
-        location="冬木市·郊外森林",
+        location="城区·郊外森林",
         command_spells=0,  # 英灵无令咒
         is_alive=True,
         mana_remaining=100,
@@ -55,7 +55,7 @@ def dead_character() -> CharacterState:
         hp=0,
         max_hp=100,
         status="心脏被刺穿，当场死亡",
-        location="冬木市·废墟",
+        location="城区·废墟",
         command_spells=0,
         is_alive=False,
         mana_remaining=0,
@@ -69,7 +69,7 @@ def low_mana_servant() -> CharacterState:
         hp=80,
         max_hp=100,
         status="轻伤·魔力枯竭",
-        location="冬木市·教会",
+        location="城区·教会",
         command_spells=0,
         is_alive=True,
         mana_remaining=15,
@@ -83,7 +83,7 @@ def zero_spells_master() -> CharacterState:
         hp=90,
         max_hp=100,
         status="轻微擦伤",
-        location="冬木市·桥头",
+        location="城区·桥头",
         command_spells=0,
         is_alive=True,
         mana_remaining=80,
@@ -99,14 +99,14 @@ def sample_memory(alive_master, alive_servant) -> GameMemorySystem:
     return GameMemorySystem(
         active_servant_keys=["Saber_Artoria", "Archer_EMIYA"],
         chronicle_history=[
-            "游戏开始：第五次冬木圣杯战争开幕。",
+            "游戏开始：游戏开幕。",
         ],
         current_snapshot={
             "Protagonist_Master": alive_master,
             "Saber_Artoria": alive_servant,
             "Archer_EMIYA": CharacterState(
                 hp=100, max_hp=100, status="满状态·单独行动中",
-                location="冬木市·远坂宅屋顶", command_spells=0,
+                location="城区·远坂宅屋顶", command_spells=0,
                 is_alive=True, mana_remaining=90,
             ),
         },
@@ -123,10 +123,10 @@ def empty_memory() -> GameMemorySystem:
         chronicle_history=["游戏开始。"],
         current_snapshot={
             "Protagonist_Master": CharacterState(
-                command_spells=3, location="冬木市·初始点"
+                command_spells=3, location="城区·初始点"
             ),
             "Saber_Artoria": CharacterState(
-                command_spells=0, location="冬木市·初始点"
+                command_spells=0, location="城区·初始点"
             ),
         },
         current_day=1,

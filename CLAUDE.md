@@ -4,7 +4,7 @@ AMD 架构 vLLM 推理引擎深度优化项目。
 
 ## 目标
 
-为型月圣杯战争 AI 叙事游戏构建本地 LLM 推理替代方案，用单卡 AMD GPU + LoRA Qwen2.5-7B 替换 DeepSeek V4 API，降低推理成本至零，同时达到匹配甚至超越云端 API 的叙事质量。
+为实时剧情生成游戏构建本地 LLM 推理替代方案，用单卡 AMD GPU + LoRA Qwen2.5-7B 替换云端 API，降低推理成本至零，同时达到匹配甚至超越云端 API 的叙事质量。
 
 ## 目录结构
 
@@ -21,7 +21,7 @@ E:\gameAMDenging\
 │   ├── CLAUDE.md           #   游戏服务的 CLAUDE.md
 │   ├── game_server.py      #   FastAPI 主引擎
 │   ├── config.py / models.py / atomic_rules.py / ai_client.py / system_prompts.py
-│   ├── servant_db.json     #   35 骑英灵库
+│   ├── character_db.json    #   角色数据库
 │   ├── client.py           #   终端 CLI
 │   ├── static/             #   手机端 Web UI
 │   └── tests/              #   104 个测试

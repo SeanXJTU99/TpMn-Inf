@@ -37,7 +37,7 @@ class TestCharacterState:
         assert cs.hp == 100
         assert cs.max_hp == 100
         assert cs.status == "待命中"
-        assert cs.location == "冬木市·未知区域"
+        assert cs.location == "城区·未知区域"
         assert cs.command_spells == 0
         assert cs.is_alive is True
         assert cs.mana_remaining == 100
@@ -48,7 +48,7 @@ class TestCharacterState:
             hp=75,
             max_hp=100,
             status="右臂骨折·轻伤",
-            location="冬木市·港口仓库",
+            location="城区·港口仓库",
             command_spells=2,
             is_alive=True,
             mana_remaining=60,
@@ -130,7 +130,7 @@ class TestCharacterState:
             hp=50,
             max_hp=80,  # 重伤导致上限降低
             status="重伤·魔力回路受损",
-            location="冬木市·地下室",
+            location="城区·地下室",
             command_spells=1,
             is_alive=True,
             mana_remaining=30,
@@ -294,11 +294,11 @@ class TestResponseModels:
 
     def test_engine_final_response(self, sample_memory):
         resp = EngineFinalResponse(
-            narrative="圣杯战争的血与火之中...",
+            narrative="game的血与火之中...",
             memory_system=sample_memory,
             turn_summary={"complexity_score": 5},
         )
-        assert "圣杯战争" in resp.narrative
+        assert "game" in resp.narrative
 
     def test_health_response(self):
         hr = HealthResponse(

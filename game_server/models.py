@@ -35,7 +35,7 @@ class CharacterState(BaseModel):
         description="当前生理/精神状态简述，如 '轻伤·右臂骨折'、'魔力枯竭'、'满状态'。"
     )
     location: str = Field(
-        default="冬木市·未知区域",
+        default="城区·未知区域",
         description="当前所在地点，用于空间逻辑判定（如移动时间、射程）。"
     )
     command_spells: int = Field(
@@ -66,7 +66,7 @@ class GameMemorySystem(BaseModel):
 
     - chronicle_history: 不可篡改的历史铁事实（追加式）
     - current_snapshot: 实时动态状态（每回合覆写式）
-    - current_day / current_phase: 圣杯战争时间轴（7个昼夜后强制结束）
+    - current_day / current_phase: 游戏时间轴（7个昼夜后强制结束）
     """
     active_servant_keys: List[str] = Field(
         default_factory=list,
@@ -85,11 +85,11 @@ class GameMemorySystem(BaseModel):
     current_day: int = Field(
         default=1,
         ge=1,
-        description="当前是圣杯战争第几天（1-N）。超过 MAX_DAYS 时由硬原子规则强制终结。"
+        description="当前是游戏第几天（1-N）。超过 MAX_DAYS 时由硬规则强制终结。"
     )
     current_phase: Literal["day", "night"] = Field(
         default="night",
-        description="当前昼夜阶段。圣杯战争从夜间开幕。day=白天（交涉·侦察），night=夜晚（战斗·暗杀）。"
+        description="当前昼夜阶段。游戏从夜间开幕。day=白天（交涉·侦察），night=夜晚（战斗·暗杀）。"
     )
 
     @model_validator(mode="after")
