@@ -34,6 +34,9 @@ resume_ggem.md
 PROGRESS.md
 infer/PHASE1.md
 
+# SGLang reclone helper — local only
+reclone_sglang.sh
+
 # Claude Code — session data, not part of project
 .claude/
 memory/
