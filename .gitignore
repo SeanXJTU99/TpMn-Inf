@@ -40,3 +40,12 @@ memory/
 
 # vLLM reference clone (sparse, v0.18.0) — not project code
 vllm/
+
+# game_server — 仅公开 API 契约 + 测试 + Web UI
+game_server/game_server.py
+game_server/ai_client.py
+game_server/atomic_rules.py
+game_server/system_prompts.py
+game_server/servant_db.json
+game_server/CLAUDE.md
+game_server/README.md
