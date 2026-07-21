@@ -1,6 +1,8 @@
 # TpMn-Inf — Non-NVIDIA LLM Inference Optimization
 
-为实时剧情生成游戏构建的非 NVIDIA 生态本地推理方案。用单卡 AMD GPU（或 Ascend NPU）+ LoRA Qwen2.5-7B 替换云端 API，目标零推理成本 + 叙事质量不劣于云端。
+为实时剧情生成游戏构建的非 NVIDIA 生态本地推理方案。用单卡 AMD GPU（或 Ascend NPU）运行开源 LLM + LoRA adapter，替换云端 API，目标零推理成本 + 叙事质量不劣于云端。
+
+支持模型：Qwen2.5/3、GLM、Llama 等 decoder-only 架构（7B-14B 级），基座冻结后通过 LoRA 后训练定制化。
 
 ## 架构
 
@@ -15,8 +17,8 @@ game_server (FastAPI :8000)
 
 **设计原则**：
 - **vLLM/SGLang 框架零修改** — 算子通过框架插件机制注入
-- **Triton 一次编写** — 同组 kernel 跨 AMD/Ascend，仅换调参 JSON
-- **代码卡关，AI 润色** — 游戏硬规则在 Python 层，LLM 只管叙事
+- **Triton 一次编写** — 同组 kernel 跨 AMD/Ascend/模型架构，仅换调参 JSON
+- **模型无关** — 支持 Qwen、GLM、Llama 等 decoder-only 模型，适配层最小化
 
 ## 项目结构
 
@@ -28,9 +30,9 @@ game_server (FastAPI :8000)
 │   │   ├── fused_geglu_ffn.py #     P3: GEGLU+FFN
 │   │   └── tests/
 │   ├── vllm_adapter/          #   vLLM CUSTOM backend 插件
-│   └── sglang_adapter/        #   SGLang adapter（待开发）
-│   ├── bench/                #   Benchmark 工具
-│   └── scripts/              #   启动脚本
+│   ├── sglang_adapter/        #   SGLang adapter（待开发）
+│   ├── bench/                 #   Benchmark 工具
+│   └── scripts/               #   启动脚本
 ├── training/eval/            # 评估体系（Phase 3.5）
 │   ├── checks/               #   程序化硬校验（persona/schema/leak/slop）
 │   ├── judges/               #   LLM judge（pairwise + rubric）
@@ -70,6 +72,6 @@ python -c "from training.eval.checks.persona import run_all_persona; ..."
 
 ## 硬件
 
-- 目标：AMD RX 7900 XTX (gfx1100, RDNA3, 24GB) 或 Ascend 910B
-- 开发：WSL2 + ROCm 7.2 / 云端 Linux
-- Triton → AMDGPU backend / CANN fork
+- 目标硬件：AMD (RDNA3/CDNA3) / Ascend 910B+ / NVIDIA (回退兼容)
+- 目标模型：decoder-only 架构，7B-14B 参数量，LoRA 后训练
+- 开发环境：Linux + ROCm 7.x / CANN，Triton → AMDGPU / Ascend backend
