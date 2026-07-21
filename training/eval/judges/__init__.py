@@ -1,0 +1,1 @@
+# eval judges — pairwise + rubric scoring (LLM-as-judge)

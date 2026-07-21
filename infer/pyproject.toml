@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=64"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "amdk"
+version = "0.1.0"
+description = "RDNA3-tuned Triton kernels for vLLM (gameAMDenging Phase 2)"
+requires-python = ">=3.10"
+# 依赖由 vLLM 环境提供（torch/triton），不在此声明避免版本冲突
+
+[project.entry-points."vllm.general_plugins"]
+amdk_rdna3_attn = "amdk.plugin:register"
+
+[tool.setuptools]
+packages = ["amdk"]

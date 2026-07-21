@@ -1,0 +1,42 @@
+# Python virtual environment (created by virtualenv)
+Lib/
+Scripts/
+pyvenv.cfg
+
+# Python cache
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment
+.env
+.env.local
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Project — local scratch files (may contain secrets)
+quickStart.txt
+
+# 计划 / 进度 / 简历类文档 — 不进入版本控制
+lucky-baking-coral.md
+eval_plan.md
+refactor_plan.md
+resume_ggem.md
+PROGRESS.md
+infer/PHASE1.md
+
+# Claude Code — session data, not part of project
+.claude/
+memory/
+
+# vLLM reference clone (sparse, v0.18.0) — not project code
+vllm/
