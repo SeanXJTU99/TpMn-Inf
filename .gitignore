@@ -42,6 +42,9 @@ CLAUDE.md
 # vLLM reference clone (sparse, v0.18.0) — not project code
 vllm/
 
+# SGLang reference clone (shallow, main) — not project code
+sglang/
+
 # game_server — 仅公开 API 契约 + 测试 + Web UI
 game_server/game_server.py
 game_server/ai_client.py
