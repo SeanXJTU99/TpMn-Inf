@@ -11,7 +11,7 @@
 
 用法:
   python3 baseline_bench.py --runs 5
-  python3 baseline_bench.py --scenario narrator --runs 10 --tag after_triton_pa
+  python3 baseline_bench.py --backend sglang --scenario narrator --runs 10 --tag after_triton_pa
 """
 
 import argparse
@@ -146,7 +146,9 @@ async def bench_scenario(client, model, scenario, runs, warmup) -> dict:
 
 async def main():
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--base-url", default="http://localhost:8080/v1")
+    ap.add_argument("--base-url", default=None, help="覆盖默认 endpoint（默认: 按 --backend 自动选）")
+    ap.add_argument("--backend", choices=["vllm", "sglang"], default="vllm",
+                    help="推理框架（预设 base-url 端口: vllm=8080, sglang=30000）")
     ap.add_argument("--model", default="qwen2.5-7b-baseline")
     ap.add_argument("--scenario", choices=[*SCENARIOS, "all"], default="all")
     ap.add_argument("--runs", type=int, default=5)
@@ -154,13 +156,21 @@ async def main():
     ap.add_argument("--tag", default="baseline", help="结果文件名标签，如 after_triton_pa")
     args = ap.parse_args()
 
-    client = AsyncOpenAI(api_key="not-needed", base_url=args.base_url)
+    if args.base_url is not None:
+        base_url = args.base_url
+    elif args.backend == "sglang":
+        base_url = "http://localhost:30000/v1"  # SGLang 默认端口
+    else:
+        base_url = "http://localhost:8080/v1"   # vLLM 默认端口
+
+    client = AsyncOpenAI(api_key="not-needed", base_url=base_url)
     names = list(SCENARIOS) if args.scenario == "all" else [args.scenario]
 
     report = {
         "tag": args.tag,
         "timestamp": datetime.now().isoformat(timespec="seconds"),
-        "base_url": args.base_url,
+        "backend": args.backend,
+        "base_url": base_url,
         "model": args.model,
         "scenarios": {},
     }

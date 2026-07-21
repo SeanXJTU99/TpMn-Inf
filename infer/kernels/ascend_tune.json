@@ -1,0 +1,27 @@
+{
+  "prefill": {
+    "tile_size": 64,
+    "num_warps": 2,
+    "num_stages": 2,
+    "waves_per_eu": null
+  },
+  "decode": {
+    "tile_size": 64,
+    "num_warps": 1,
+    "num_stages": 1,
+    "waves_per_eu": null
+  },
+  "num_softmax_segments": -1,
+  "ascend_gemv_block_k": 128,
+  "ascend_gemv_block_n": 128,
+  "_ub_budget": "192KB per AI Core, 双缓冲后可用 ~96KB",
+  "_l1": "512KB per AI Core (910A 减半)",
+  "_alignment": "MTE 32B, Cube 512B, tile 16-align",
+  "_status": "默认值——未在 910B 实测，待 msprof 确认后调优",
+  "_notes": [
+    "prefill num_stages=2: 双缓冲隐藏 DMA，UB 256KB 够放两份 tile",
+    "decode tile=64: 2D GEMV 路径，tile 仅影响 K/V load 粒度，不为计算瓶颈",
+    "num_softmax_segments=-1: 表示走 2D 路径，不启用 3D 分段 softmax",
+    "ascend_gemv_block_k/n: P1/P3 的 Vector 内积分块粒度"
+  ]
+}

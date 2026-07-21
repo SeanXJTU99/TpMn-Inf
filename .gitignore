@@ -1,7 +1,7 @@
 # Python virtual environment (created by virtualenv)
-Lib/
-Scripts/
-pyvenv.cfg
+/Lib/
+/Scripts/
+/pyvenv.cfg
 
 # Python cache
 __pycache__/
@@ -31,8 +31,10 @@ lucky-baking-coral.md
 eval_plan.md
 refactor_plan.md
 resume_ggem.md
+ascend_plan.md
 PROGRESS.md
 infer/PHASE1.md
+infer/ascend_constraints.md
 
 # SGLang reclone helper — local only
 reclone_sglang.sh

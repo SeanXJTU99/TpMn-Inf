@@ -21,6 +21,7 @@ from vllm.triton_utils import tl, triton
 from .tune_config import TUNE
 
 _IS_HIP = torch.version.hip is not None
+_IS_ASCEND = hasattr(torch, "npu") and torch.npu.is_available()
 
 
 def _launch_extra(cfg) -> dict:
@@ -541,8 +542,10 @@ def unified_attention_rdna3(
     total_num_q_blocks = q.shape[0] // BLOCK_Q + num_seqs
 
     # 3D decode 路径条件与上游一致：纯 decode + 小 batch + 分段缓冲已分配
+    # Ascend 910B: 2D 路径 BLOCK_M=16 满足 Cube 16 对齐，无需 3D 分段
     use_3d = (
-        seq_threshold_3D is not None
+        not _IS_ASCEND
+        and seq_threshold_3D is not None
         and num_par_softmax_segments is not None
         and softmax_segm_output is not None
         and softmax_segm_max is not None

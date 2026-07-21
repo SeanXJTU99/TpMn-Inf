@@ -9,6 +9,10 @@ Qwen2.5-7B 特化:
   - neox-style RoPE: 相邻 dim pair 旋转，Qwen2 base_theta=1e6
   - 仅 bf16/fp16，无 FP8
 
+GEMM 策略:
+  AMD (RDNA3):    tl.sum(x * w, axis=0) Vector 内积 — GEMV M=1 场景 MFMA 不 gain
+  Ascend (910B):  同上 Vector 内积 — Cube 对 M=1 GEMV 利用率 <5%，Vector > Cube
+
 参考:
   - 上游 RMSNorm: vllm/model_executor/layers/layernorm.py
   - 上游 QKV: vllm/model_executor/layers/linear.py QKVParallelLinear
@@ -22,6 +26,7 @@ from vllm.triton_utils import tl, triton
 from .tune_config import TUNE
 
 _IS_HIP = torch.version.hip is not None
+_IS_ASCEND = hasattr(torch, "npu") and torch.npu.is_available()
 
 
 def _launch_extra(cfg) -> dict:
@@ -252,7 +257,7 @@ def fused_rms_qkv_rope_decode(
 
     # 调参：decode 用专用的 decode tile
     cfg = TUNE.decode
-    BLOCK_K = 128
+    BLOCK_K = TUNE.ascend_gemv_block_k if _IS_ASCEND else 128
     # 每 block 处理的 head 数=1（Q:28 block, K:4 block, V:4 block = 36 block 总计）
     HEADS_PER_BLOCK = 1
     total_blocks = (
