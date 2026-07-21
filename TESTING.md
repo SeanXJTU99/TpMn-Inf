@@ -106,9 +106,9 @@ export HF_ENDPOINT=https://hf-mirror.com
 pip install "huggingface_hub[cli]"
 hf download Qwen/Qwen2.5-7B-Instruct --local-dir ~/models/Qwen2.5-7B-Instruct
 
-# 5. 安装 amdk 插件
+# 5. 安装 kernels 插件
 pip install -e /mnt/e/gameAMDenging/infer/
-# 验证: python3 -c "import amdk; print(amdk.__version__)"
+# 验证: python3 -c "import kernels; print(kernels.__version__)"
 # 期望: 0.1.0
 ```
 
@@ -136,7 +136,7 @@ curl -s http://localhost:8080/v1/chat/completions \
 ```bash
 source ~/venv-vllm/bin/activate
 
-# 基线（上游 Triton backend，不启用 amdk）
+# 基线（上游 Triton backend，不启用 kernels）
 python3 /mnt/e/gameAMDenging/infer/bench/baseline_bench.py --runs 5 --tag baseline
 
 # 查看结果
@@ -151,7 +151,7 @@ cat /mnt/e/gameAMDenging/infer/bench/results/baseline_*.json | python3 -m json.t
 source ~/venv-vllm/bin/activate
 
 # 单元测试（不需要 vLLM server，直接用 torch + triton 跑 kernel）
-pytest /mnt/e/gameAMDenging/infer/amdk/tests/test_attention_correctness.py -v
+pytest /mnt/e/gameAMDenging/infer/kernels/tests/test_attention_correctness.py -v
 ```
 
 期望输出：
@@ -169,7 +169,7 @@ test_single_token_seq[qwen25-gqa-bfloat16] PASSED
 
 ---
 
-## 六、启用 amdk backend 后 benchmark 对照
+## 六、启用 kernels backend 后 benchmark 对照
 
 ```bash
 source ~/venv-vllm/bin/activate
@@ -178,9 +178,9 @@ source ~/venv-vllm/bin/activate
 bash /mnt/e/gameAMDenging/infer/scripts/launch_baseline.sh --attention-backend CUSTOM
 
 # 对照 benchmark
-python3 /mnt/e/gameAMDenging/infer/bench/baseline_bench.py --runs 5 --tag amdk_p0
+python3 /mnt/e/gameAMDenging/infer/bench/baseline_bench.py --runs 5 --tag kernels_p0
 
-# 对比 baseline vs amdk_p0 的 TTFT/E2E/decode tok/s
+# 对比 baseline vs kernels_p0 的 TTFT/E2E/decode tok/s
 ls /mnt/e/gameAMDenging/infer/bench/results/
 ```
 
@@ -192,11 +192,11 @@ ls /mnt/e/gameAMDenging/infer/bench/results/
 source ~/venv-vllm/bin/activate
 
 # P1: Fused RMSNorm + QKV + RoPE
-pytest /mnt/e/gameAMDenging/infer/amdk/tests/test_fused_qkv_rope.py -v
+pytest /mnt/e/gameAMDenging/infer/kernels/tests/test_fused_qkv_rope.py -v
 # 期望: 2 passed (bf16 + fp16, bias + no_bias)
 
 # P3: Fused GEGLU + FFN
-pytest /mnt/e/gameAMDenging/infer/amdk/tests/test_fused_geglu.py -v
+pytest /mnt/e/gameAMDenging/infer/kernels/tests/test_fused_geglu.py -v
 # 期望: 2 passed (bf16 + fp16)
 ```
 
@@ -208,19 +208,19 @@ pytest /mnt/e/gameAMDenging/infer/amdk/tests/test_fused_geglu.py -v
 source ~/venv-vllm/bin/activate
 
 # dry-run — 确认搜索空间
-python3 /mnt/e/gameAMDenging/infer/amdk/tune_attention.py --dry-run
+python3 /mnt/e/gameAMDenging/infer/kernels/tune_attention.py --dry-run
 
 # P0 decode sweep（需 vLLM server 运行在 :8080）
-python3 /mnt/e/gameAMDenging/infer/amdk/tune_attention.py --kernel decode
+python3 /mnt/e/gameAMDenging/infer/kernels/tune_attention.py --kernel decode
 
-# 产出 infer/amdk/amd_tune.json → 重启 vLLM 后自动生效
-cat /mnt/e/gameAMDenging/infer/amdk/amd_tune.json
+# 产出 infer/kernels/amd_tune.json → 重启 vLLM 后自动生效
+cat /mnt/e/gameAMDenging/infer/kernels/amd_tune.json
 ```
 
 中断后可恢复：
 ```bash
-python3 /mnt/e/gameAMDenging/infer/amdk/tune_attention.py --kernel decode \
-  --resume /tmp/amdk_tune_decode_checkpoint.json
+python3 /mnt/e/gameAMDenging/infer/kernels/tune_attention.py --kernel decode \
+  --resume /tmp/kernels_tune_decode_checkpoint.json
 ```
 
 ---

@@ -14,7 +14,7 @@ pytest.importorskip("triton")
 if not torch.cuda.is_available():
     pytest.skip("requires GPU (ROCm/CUDA)", allow_module_level=True)
 
-from amdk.fused_rms_qkv_rope import fused_rms_qkv_rope_decode
+from ..fused_qkv_rope import fused_rms_qkv_rope_decode
 
 
 # Qwen2.5-7B

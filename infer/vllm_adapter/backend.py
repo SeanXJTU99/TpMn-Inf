@@ -22,8 +22,8 @@ from vllm.v1.attention.backends.triton_attn import (
 )
 from vllm.v1.kv_cache_interface import AttentionSpec
 
-from amdk.tune_config import TUNE
-from amdk.unified_attention_rdna3 import unified_attention_rdna3
+from kernels.tune_config import TUNE
+from kernels.attention import unified_attention_rdna3
 
 
 class Rdna3AttentionMetadataBuilder(TritonAttentionMetadataBuilder):

@@ -22,12 +22,13 @@ game_server (FastAPI :8000)
 
 ```
 ├── infer/                    # 推理引擎（核心交付）
-│   ├── amdk/                 #   RDNA3 特化 Triton kernel + vLLM 插件
-│   │   ├── unified_attention_rdna3.py   # P0: PagedAttention
-│   │   ├── fused_rms_qkv_rope.py        # P1: RMSNorm+QKV+RoPE 融合
-│   │   ├── fused_geglu_ffn.py           # P3: GEGLU+FFN 融合
-│   │   ├── tune_config.py / tune_attention.py   # 自动调参
-│   │   └── tests/                       # 正确性测试
+│   ├── kernels/               #   框架无关 Triton 算子
+│   │   ├── attention.py       #     P0: PagedAttention
+│   │   ├── fused_qkv_rope.py  #     P1: RMSNorm+QKV+RoPE
+│   │   ├── fused_geglu_ffn.py #     P3: GEGLU+FFN
+│   │   └── tests/
+│   ├── vllm_adapter/          #   vLLM CUSTOM backend 插件
+│   └── sglang_adapter/        #   SGLang adapter（待开发）
 │   ├── bench/                #   Benchmark 工具
 │   └── scripts/              #   启动脚本
 ├── training/eval/            # 评估体系（Phase 3.5）

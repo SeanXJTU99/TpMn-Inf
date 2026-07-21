@@ -14,8 +14,8 @@ pytest.importorskip("triton")
 if not torch.cuda.is_available():
     pytest.skip("requires GPU (ROCm/CUDA)", allow_module_level=True)
 
-from amdk.tune_config import TUNE
-from amdk.unified_attention_rdna3 import unified_attention_rdna3
+from ..tune_config import TUNE
+from ..attention import unified_attention_rdna3
 
 BLOCK_SIZE = 16
 DEVICE = "cuda"

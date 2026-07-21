@@ -13,7 +13,7 @@ pytest.importorskip("triton")
 if not torch.cuda.is_available():
     pytest.skip("requires GPU (ROCm/CUDA)", allow_module_level=True)
 
-from amdk.fused_geglu_ffn import fused_geglu_ffn_decode
+from ..fused_geglu_ffn import fused_geglu_ffn_decode
 
 # Qwen2.5-7B
 HIDDEN = 3584

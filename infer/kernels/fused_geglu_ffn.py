@@ -18,7 +18,7 @@ import torch
 
 from vllm.triton_utils import tl, triton
 
-from amdk.tune_config import TUNE
+from .tune_config import TUNE
 
 _IS_HIP = torch.version.hip is not None
 

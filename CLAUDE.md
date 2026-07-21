@@ -27,8 +27,14 @@ E:\gameAMDenging\
 │   └── tests/              #   104 个测试
 ├── infer/                  # 推理引擎
 │   ├── PHASE1.md           #   Phase 1 环境搭建 + 基线步骤
-│   ├── pyproject.toml      #   amdk 包（pip install -e infer/ 注册 vLLM 插件）
-│   ├── amdk/               #   Triton 核函数（RDNA3 特化，CUSTOM backend）
+│   ├── pyproject.toml      #   tp-inf 包（pip install -e infer/ 注册 vLLM/SGLang 插件）
+│   ├── kernels/            #   框架无关 Triton 算子（共享核心）
+│   │   ├── attention.py    #     P0: PagedAttention
+│   │   ├── fused_qkv_rope.py    #  P1: RMSNorm+QKV+RoPE
+│   │   ├── fused_geglu_ffn.py   #  P3: GEGLU+FFN
+│   │   └── tests/          #     正确性测试
+│   ├── vllm_adapter/       #   vLLM adapter（CUSTOM backend 插件）
+│   ├── sglang_adapter/     #   SGLang adapter（待开发）
 │   ├── bench/              #   基线/回归 benchmark
 │   ├── scripts/            #   启动脚本
 │   ├── tvm_graph/          #   TVM 子图编译（待开发）
@@ -42,9 +48,9 @@ E:\gameAMDenging\
 
 ## 核心决策
 
-1. **vLLM 框架不动**：只重写算子层，scheduler/block manager/API server 保留
-2. **Triton + TVM 互补**：Triton 做 kernel 级融合（PagedAttention / Fused QKV+RoPE / Fused GEGLU），TVM 做图级子图编译 + MetaSchedule auto-tune
-3. **不做 TVM GEMM auto-tune**：已确认删除
+1. **vLLM/SGLang 框架零修改**：算子通过插件机制注入（vllm: CUSTOM backend, sglang: 待适配）
+2. **Triton 一次编写，多框架+多硬件共用**：`kernels/` 为核心，`vllm/` `sglang/` 为 adapter
+3. **硬件调参分离**：tile/warps/stages 全部参数化，`amd_tune.json` / `ascend_tune.json` 按平台切换
 4. **LoRA 全流程**：基座 Qwen2.5-7B 冻结，两份 adapter（Arbiter rank=64 / Narrator rank=32），三阶段后训练（SFT→RLAIF→DPO）
 5. **Gemini 2.5 Pro 作 judge + 正例生成**：免费 tier，四维评分（文风/一致性/战术暗示/第二人称）
 6. **AMD 专属调参**：RDNA3 wave32 / CDNA wave64 分别调 tile size 和 occupancy

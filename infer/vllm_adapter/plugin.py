@@ -18,6 +18,6 @@ def register() -> None:
 
     register_backend(
         AttentionBackendEnum.CUSTOM,
-        "amdk.backend.Rdna3AttentionBackend",
+        "vllm_adapter.backend.Rdna3AttentionBackend",
     )
     logger.info("amdk: registered Rdna3AttentionBackend as CUSTOM")

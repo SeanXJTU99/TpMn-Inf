@@ -3,14 +3,14 @@ requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "amdk"
+name = "tp-inf"
 version = "0.1.0"
-description = "RDNA3-tuned Triton kernels for vLLM (gameAMDenging Phase 2)"
+description = "Multi-backend Triton kernels for vLLM + SGLang on AMD/Ascend"
 requires-python = ">=3.10"
-# 依赖由 vLLM 环境提供（torch/triton），不在此声明避免版本冲突
+# 依赖由推理框架环境提供（torch/triton），不在此声明避免版本冲突
 
 [project.entry-points."vllm.general_plugins"]
-amdk_rdna3_attn = "amdk.plugin:register"
+rdna3_attn = "vllm_adapter.plugin:register"
 
 [tool.setuptools]
-packages = ["amdk"]
+packages = ["kernels", "vllm_adapter", "sglang_adapter"]
